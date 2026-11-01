@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDF8EB" />
+      <stop offset="100%" stop-color="#EFE6CB" />
+    </linearGradient>
+
+    <!-- Pouch Body Gradient (Artisanal Matte Kraft with Forest Green Accent) -->
+    <linearGradient id="kraftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E8DCBA" />
+      <stop offset="18%" stop-color="#F2E8D0" />
+      <stop offset="50%" stop-color="#FAF2DE" />
+      <stop offset="82%" stop-color="#EFE5CD" />
+      <stop offset="100%" stop-color="#E2D4AF" />
+    </linearGradient>
+
+    <!-- Forest Green Brand Banner -->
+    <linearGradient id="forestBanner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#123D24" />
+      <stop offset="100%" stop-color="#0E2E1B" />
+    </linearGradient>
+
+    <!-- Gold Foil Accents -->
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2DF80" />
+      <stop offset="50%" stop-color="#D8B84B" />
+      <stop offset="100%" stop-color="#A88726" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="pouchShadow" x="-10%" y="-5%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#1A281A" flood-opacity="0.18" />
+    </filter>
+  </defs>
+
+  <!-- Clean Canvas -->
+  <rect width="600" height="600" fill="url(#bgGrad)" rx="24" />
+
+  <!-- Backdrop Plate Ring -->
+  <circle cx="300" cy="460" r="180" fill="#E8DEC4" opacity="0.4" />
+  <ellipse cx="300" cy="520" rx="200" ry="24" fill="#0E2E1B" opacity="0.12" />
+
+  <!-- Stand-up Pouch Group -->
+  <g filter="url(#pouchShadow)">
+    <!-- Pouch Base Contour -->
+    <!-- Gusset Bottom -->
+    <path d="M175 490 Q300 522 425 490 L445 130 Q300 120 155 130 Z" fill="url(#kraftGrad)" stroke="#D8CA9F" stroke-width="2" />
+
+    <!-- Top Heat Seal & Tear Notches -->
+    <path d="M155 130 Q300 120 445 130 L450 90 Q300 80 150 90 Z" fill="#D8CA9F" />
+    <line x1="150" y1="98" x2="450" y2="98" stroke="#BFB084" stroke-width="1.5" stroke-dasharray="4 2" />
+    <line x1="152" y1="104" x2="448" y2="104" stroke="#BFB084" stroke-width="1.5" stroke-dasharray="4 2" />
+    <!-- Tear Notch -->
+    <polygon points="152,112 160,115 152,118" fill="#A89868" />
+    <polygon points="448,112 440,115 448,118" fill="#A89868" />
+
+    <!-- Center Label Area -->
+    <rect x="180" y="145" width="240" height="325" rx="12" fill="#FFFFFF" opacity="0.94" stroke="#E6DAC0" stroke-width="1.5" />
+    
+    <!-- Top Green Stripe on Label -->
+    <path d="M180 145 H420 V205 H180 Z" fill="url(#forestBanner)" rx="10" />
+
+    <!-- Brand Header -->
+    <text x="300" y="180" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="800" font-size="24" fill="#FFF9E9" letter-spacing="1">
+      NUTRI<tspan fill="#D8B84B">CRUNCH</tspan>
+    </text>
+    <text x="300" y="196" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="8" fill="#E8DEC4" letter-spacing="1.5">
+      REAL INGREDIENTS · HONEST GOODNESS
+    </text>
+
+    <!-- Golden Ribbon -->
+    <rect x="200" y="215" width="200" height="4" fill="url(#goldShine)" rx="2" />
+
+    <!-- Product Title -->
+    <text x="300" y="240" text-anchor="middle" font-family="'Outfit', sans-serif" font-weight="700" font-size="19" fill="#123D24">
+      DRY FRUITS PANJIRI
+    </text>
+    <text x="300" y="256" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="10.5" fill="#C76525">
+      TRADITIONAL RECIPE · BILONA COW GHEE
+    </text>
+
+    <!-- Central Food Illustration Ring -->
+    <circle cx="300" cy="330" r="56" fill="#FDF7EA" stroke="#D8B84B" stroke-width="2" />
+    
+    <!-- Bowl of Panjiri Motif Inside Ring -->
+    <path d="M260 340 Q300 375 340 340 Z" fill="#8C5C26" stroke="#4A3013" stroke-width="1.5" />
+    <!-- Golden toasted panjiri texture -->
+    <ellipse cx="300" cy="338" rx="38" ry="12" fill="#DCA357" />
+    <!-- Garnishing Almonds & Pistachios -->
+    <ellipse cx="288" cy="334" rx="7" ry="4" fill="#A86226" transform="rotate(-20 288 334)" />
+    <ellipse cx="312" cy="335" rx="6" ry="4" fill="#56783B" transform="rotate(30 312 335)" />
+    <circle cx="298" cy="332" r="3" fill="#D8B84B" />
+    <circle cx="304" cy="340" r="2.5" fill="#56783B" />
+
+    <!-- Badge Pills below graphic -->
+    <g transform="translate(195, 396)">
+      <!-- Pure Desi Ghee Badge -->
+      <rect x="0" y="0" width="102" height="22" rx="4" fill="#F4EDE0" stroke="#D8CA9F" stroke-width="1" />
+      <text x="51" y="14" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#123D24">
+        PURE COW GHEE
+      </text>
+
+      <!-- No Refined Sugar Badge -->
+      <rect x="108" y="0" width="102" height="22" rx="4" fill="#F4EDE0" stroke="#D8CA9F" stroke-width="1" />
+      <text x="159" y="14" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#56783B">
+        ORGANIC JAGGERY
+      </text>
+    </g>
+
+    <!-- Net Weight & Veg Mark -->
+    <g transform="translate(195, 432)">
+      <!-- Indian Green Vegetarian Mark -->
+      <rect x="4" y="8" width="18" height="18" fill="#FFFFFF" stroke="#128834" stroke-width="1.5" />
+      <circle cx="13" cy="17" r="5" fill="#128834" />
+
+      <text x="32" y="22" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11" fill="#20251F">
+        Net Wt: 500g
+      </text>
+
+      <text x="206" y="22" text-anchor="end" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11" fill="#C76525">
+        Handcrafted
+      </text>
+    </g>
+  </g>
+
+  <!-- Decorative Scattered Almonds & Dry Fruits in Foreground -->
+  <g transform="translate(85, 485)">
+    <!-- Almond -->
+    <path d="M15 15 C28 5, 42 12, 45 25 C45 38, 30 42, 18 36 C8 30, 8 20, 15 15 Z" fill="#9C5D2D" stroke="#663A16" stroke-width="1" />
+    <path d="M22 17 Q34 22 28 34" stroke="#BD7C42" stroke-width="1" fill="none" opacity="0.6" />
+  </g>
+
+  <g transform="translate(460, 480)">
+    <!-- Cashew -->
+    <path d="M12 18 C14 8, 30 8, 35 18 C38 28, 28 40, 15 36 C22 32, 24 22, 12 18 Z" fill="#F4E8D0" stroke="#D1BE98" stroke-width="1.2" />
+    <!-- Pistachio Green -->
+    <circle cx="50" cy="28" r="7" fill="#719946" stroke="#486827" stroke-width="1" />
+  </g>
+</svg>

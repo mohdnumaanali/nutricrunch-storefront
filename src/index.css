@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-forest: #123D24;
+  --color-forest-dark: #0B2516;
+  --color-forest-light: #1B5633;
+  --color-cream: #FFF9E9;
+  --color-cream-light: #FFFDF7;
+  --color-cream-dark: #F5ECCE;
+  --color-leaf: #56783B;
+  --color-leaf-dark: #435E2D;
+  --color-leaf-light: #6D974B;
+  --color-warm-orange: #C76525;
+  --color-warm-orange-dark: #A95119;
+  --color-gold: #D8B84B;
+  --color-gold-dark: #BA9B35;
+  --color-dark-text: #20251F;
+  --color-muted-text: #5D675A;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+/* Custom scrollbars and utility classes */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: #FFF9E9;
+  color: #20251F;
+}
+
+/* Print styling for receipts */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

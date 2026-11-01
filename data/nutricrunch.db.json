@@ -1,0 +1,437 @@
+{
+  "products": [
+    {
+      "id": "prod-panjiri-01",
+      "slug": "nutricrunch-dry-fruits-panjiri",
+      "name": "NutriCrunch Dry Fruits Panjiri",
+      "description": "Traditional artisanal panjiri slow-roasted in pure cow desi ghee with California almonds, cashew nuts, green pistachios, pure unrefined jaggery, roasted lotus seeds (phool makhana), charmagaz melon seeds, edible gondh, and aromatic green cardamom. Zero refined sugar, zero preservatives.",
+      "price": 799,
+      "originalPrice": 899,
+      "discountPercent": 11,
+      "category": "Traditional Panjiri",
+      "ingredients": [
+        "California Almonds (Badam)",
+        "Cashew Nuts (Kaju)",
+        "Green Pistachios (Pista)",
+        "Pure Cow Bilona Desi Ghee",
+        "Lotus Seeds (Phool Makhana)",
+        "Melon Seeds (Charmagaz)",
+        "Organic Unrefined Jaggery (Gur)",
+        "Stone-Ground Whole Wheat Flour (Atta)",
+        "Green Cardamom (Elaichi)",
+        "Edible Gum (Gondh)"
+      ],
+      "allergenInfo": "Contains Tree Nuts (Almonds, Cashews, Pistachios), Milk Solid (Pure Desi Ghee), and Gluten.",
+      "packageWeight": "500g",
+      "stock": 45,
+      "sku": "NC-PANJ-500G",
+      "published": true,
+      "isFeatured": true,
+      "dietary": [
+        "100% Vegetarian",
+        "Pure Desi Ghee",
+        "No Refined Sugar",
+        "Preservative Free",
+        "Handmade"
+      ],
+      "shelfLife": "4 Months in an airtight container",
+      "storageInstructions": "Store in a cool, dry place. Seal lid tightly after each use. Avoid moisture. Do not refrigerate.",
+      "images": [
+        "/assets/panjiri-pouch.svg",
+        "/assets/panjiri-bowl.svg"
+      ],
+      "createdAt": "2026-09-29T01:52:20.544Z",
+      "updatedAt": "2026-10-29T01:52:20.544Z"
+    },
+    {
+      "id": "prod-banana-02",
+      "slug": "nutricrunch-banana-chips",
+      "name": "NutriCrunch Banana Chips",
+      "description": "Crispy Kerala-style plantain banana chips thinly sliced from fresh raw Nendran plantains and cooked to golden perfection in pure cold-pressed coconut oil. Delicately seasoned with rock salt (sendha namak) and pure organic turmeric. 100% Palm oil free.",
+      "price": 199,
+      "originalPrice": 249,
+      "discountPercent": 20,
+      "category": "Banana Chips & Snacks",
+      "ingredients": [
+        "Fresh Raw Nendran Bananas (Plantains)",
+        "Pure Cold-Pressed Coconut Oil",
+        "Rock Salt (Sendha Namak)",
+        "Organic Turmeric Powder (Haldi)"
+      ],
+      "allergenInfo": "Manufactured in a clean facility that handles nuts. Free from gluten and dairy.",
+      "packageWeight": "250g",
+      "stock": 80,
+      "sku": "NC-BAN-250G",
+      "published": true,
+      "isFeatured": true,
+      "dietary": [
+        "100% Vegan",
+        "Gluten Free",
+        "No Palm Oil",
+        "Cold-Pressed Coconut Oil",
+        "Trans-Fat Free"
+      ],
+      "shelfLife": "3 Months from packing date",
+      "storageInstructions": "Keep in a cool, dry place. Reseal the pouch or store in an airtight tin to maintain crisp crunch.",
+      "images": [
+        "/assets/banana-chips-pouch.svg",
+        "/assets/banana-chips-bowl.svg"
+      ],
+      "createdAt": "2026-10-04T01:52:20.544Z",
+      "updatedAt": "2026-10-29T01:52:20.544Z"
+    }
+  ],
+  "orders": [],
+  "analytics": [
+    {
+      "id": "ev-1793236663822",
+      "type": "pageview",
+      "path": "/",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:17:43.823Z"
+    },
+    {
+      "id": "ev-1793236679325",
+      "type": "pageview",
+      "path": "/",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:17:59.325Z"
+    },
+    {
+      "id": "ev-1793236684387",
+      "type": "pageview",
+      "path": "/",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:18:04.387Z"
+    },
+    {
+      "id": "ev-1793236686246",
+      "type": "pageview",
+      "path": "/",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:18:06.246Z"
+    },
+    {
+      "id": "ev-1793236686939",
+      "type": "pageview",
+      "path": "/",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:18:06.939Z"
+    },
+    {
+      "id": "ev-1793238291945",
+      "type": "pageview",
+      "path": "/admin/login",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:44:51.945Z"
+    },
+    {
+      "id": "ev-1793238297508",
+      "type": "pageview",
+      "path": "/admin/dashboard",
+      "sessionId": "sess_direct",
+      "timestamp": "2026-10-29T01:44:57.508Z"
+    }
+  ],
+  "inquiries": [
+    {
+      "id": "inq-1",
+      "name": "Kavitha Sharma",
+      "phone": "9849512340",
+      "email": "kavitha@example.com",
+      "subject": "Bulk Order for Festival in Kazipet",
+      "message": "Hello NutriCrunch, I want to order 25 packs of Dry Fruits Panjiri for an upcoming family pooja function in Kazipet. Do you provide custom gift box packaging?",
+      "status": "responded",
+      "createdAt": "2026-10-22T01:19:45.190Z"
+    }
+  ],
+  "settings": {
+    "storeName": "NutriCrunch",
+    "tagline": "Real Ingredients. Honest Goodness.",
+    "phone": "+91 9154797936",
+    "whatsapp": "+919154797936",
+    "instagram": "@nutricrunch_wgl",
+    "instagramUrl": "https://instagram.com/nutricrunch_wgl",
+    "email": "care@nutricrunch.in",
+    "address": "Shop #4, Sri Rama Towers, Main Road, Hanamkonda",
+    "city": "Warangal",
+    "state": "Telangana",
+    "serviceZones": [
+      {
+        "name": "Warangal, Hanamkonda & Kazipet (Tri-Cities Local Express)",
+        "pinCodes": [
+          "506001",
+          "506002",
+          "506003",
+          "506004",
+          "506007",
+          "506009",
+          "506011",
+          "506015"
+        ],
+        "fee": 40,
+        "freeAbove": 499
+      }
+    ],
+    "nationalShippingFee": 70,
+    "nationalFreeAbove": 999,
+    "codEnabled": true,
+    "razorpayEnabled": true,
+    "razorpayKeyId": "rzp_test_sampleKey123"
+  },
+  "admin": {
+    "id": "admin-01",
+    "email": "nutricrunch@2026",
+    "passwordSalt": "nutricrunch_salt_2026",
+    "passwordHash": "62dac60feb2e60f6c95c4fe5296c8ad51dad98349c830a24fc5eff494d22750eb4a99cb50416a16149044e980adc268f92e8df467a229661c589152014a4893e",
+    "name": "NutriCrunch Admin",
+    "role": "superadmin",
+    "isCustom": false
+  },
+  "sessions": {
+    "241b0cedbe47bada3c6c9fd2f02f067d393d322772eda7f3d55f9b364d850517": {
+      "adminId": "admin-01",
+      "expiresAt": 1793582399499
+    },
+    "7c2b85bc67f9dbc3681a817233548efa339998812d9e3a198216f7b5e7af0079": {
+      "adminId": "admin-01",
+      "expiresAt": 1793583431274
+    },
+    "5c845c035b0d8858dd82c0b640b71fa48f0fa5d6c266b1a25090d98100c16bb9": {
+      "adminId": "admin-01",
+      "expiresAt": 1793602633401
+    },
+    "19ab4d2b435aceff5a79a2ab262864d80f9230dfcf986b640fd655417619539b": {
+      "adminId": "admin-01",
+      "expiresAt": 1793602649062
+    },
+    "23b998cccd9f65b3440b961cbb7f9febebe185667bf0b01e46e6d508c2270ca3": {
+      "adminId": "admin-01",
+      "expiresAt": 1793602690626
+    },
+    "580a3bd23fcc666591f2cbd559acd9ba37a2e6a8aa35e57501504a9951a2a2b4": {
+      "adminId": "admin-01",
+      "expiresAt": 1793841805333
+    },
+    "e5449193dae137074281e9e0ec04a60650fa1be8969aad3be99d0c5d50dedc62": {
+      "adminId": "admin-01",
+      "expiresAt": 1793841814783
+    },
+    "fe5cc0799094c9043fa4943138042ab57571c657c1f615a98236788f3171ec75": {
+      "adminId": "admin-01",
+      "expiresAt": 1793841814886
+    },
+    "250935a2312e3586955130926206a29e85a048f3275dbb7bbeef409be701980c": {
+      "adminId": "admin-01",
+      "expiresAt": 1793841824670
+    },
+    "37f8e5cc0dda0055aa1f16b6d199ad4e2b69950cd4fd04559203071c02f06567": {
+      "adminId": "admin-01",
+      "expiresAt": 1793841841281
+    },
+    "7391ae054c3b52d121bf570aca4bc4d674628a3009fb67a57140192d79140752": {
+      "adminId": "admin-01",
+      "expiresAt": 1793843097357
+    },
+    "f6c1286a9cb2ab3e6c6701a2109beecf221a63245a011fde1034e85d5744d8ab": {
+      "adminId": "admin-01",
+      "expiresAt": 1793843546134
+    },
+    "d350a89fa863dde30009d855a9b7e3abb6cd89897a36f1ab8a13e7dfa113e2ca": {
+      "adminId": "admin-01",
+      "expiresAt": 1793843554276
+    },
+    "1a7deb9d4aa0253b75db105a7afdee4ed38e12a3ead48f9188857b3d506d5148": {
+      "adminId": "admin-01",
+      "expiresAt": 1794135666285
+    },
+    "dd088503a836c1887159464bafb1e78415d3cd67f5357a286e587c046cc94206": {
+      "adminId": "admin-01",
+      "expiresAt": 1794135671601
+    }
+  },
+  "auditLogs": [
+    {
+      "id": "log-1793530871623",
+      "action": "DELETE_CUSTOMER_REVIEW",
+      "details": "Review rev-1793530798287-p718 was removed by administrator.",
+      "timestamp": "2026-11-01T11:01:11.623Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793530871608",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-11-01T11:01:11.608Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793530866293",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-11-01T11:01:06.293Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793530798287",
+      "action": "NEW_CUSTOMER_REVIEW",
+      "details": "Customer review submitted by \"Venkatesh K.\" (Subedari, Hanamkonda) - 5★ rating.",
+      "timestamp": "2026-11-01T10:59:58.287Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793238754305",
+      "action": "RESET_CATALOG",
+      "details": "Product catalog restored to factory defaults (2 default items).",
+      "timestamp": "2026-10-29T01:52:34.305Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793238754284",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-10-29T01:52:34.284Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793238746174",
+      "action": "RESET_CATALOG",
+      "details": "Product catalog restored to factory defaults (2 default items).",
+      "timestamp": "2026-10-29T01:52:26.174Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793238746144",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-10-29T01:52:26.144Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793238297366",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-10-29T01:44:57.366Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793237041291",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-10-29T01:24:01.291Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793237024677",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin storeowner@nutricrunch.in logged in successfully.",
+      "timestamp": "2026-10-29T01:23:44.677Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793237014896",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin storeowner@nutricrunch.in logged in successfully.",
+      "timestamp": "2026-10-29T01:23:34.896Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793237014868",
+      "action": "ADMIN_CREDENTIALS_UPDATED",
+      "details": "Admin profile updated. Email: storeowner@nutricrunch.in. Password changed: Yes.",
+      "timestamp": "2026-10-29T01:23:34.868Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793237014791",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-10-29T01:23:34.791Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793237005353",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin nutricrunch@2026 logged in successfully.",
+      "timestamp": "2026-10-29T01:23:25.353Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1792997890634",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin admin@nutricrunch.in logged in.",
+      "timestamp": "2026-10-26T06:58:10.634Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1792997849071",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin admin@nutricrunch.in logged in.",
+      "timestamp": "2026-10-26T06:57:29.071Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1792997833410",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin admin@nutricrunch.in logged in.",
+      "timestamp": "2026-10-26T06:57:13.410Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1792978631282",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin admin@nutricrunch.in logged in.",
+      "timestamp": "2026-10-26T01:37:11.282Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1792977599507",
+      "action": "ADMIN_LOGIN",
+      "details": "Admin admin@nutricrunch.in logged in.",
+      "timestamp": "2026-10-26T01:19:59.507Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1",
+      "action": "SYSTEM_INIT",
+      "details": "NutriCrunch database initialized with verified product schemas.",
+      "timestamp": "2026-10-26T01:19:45.190Z",
+      "ip": "127.0.0.1"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-01",
+      "name": "Sravanthi P.",
+      "location": "Hanamkonda",
+      "rating": 5,
+      "comment": "The aroma and rich taste of pure cow desi ghee in the panjiri is simply exceptional! You can taste the slow-roasted crunchy almonds, cashews, and lotus seeds in every bite. Organic jaggery gives it the perfect wholesome sweetness without feeling heavy.",
+      "verified": true,
+      "productName": "NutriCrunch Dry Fruits Panjiri",
+      "createdAt": "2026-10-17T10:59:49.013Z",
+      "status": "published"
+    },
+    {
+      "id": "rev-02",
+      "name": "Rahul M.",
+      "location": "Kazipet",
+      "rating": 5,
+      "comment": "The crispiness of the coconut oil banana chips is unbeatable! Unlike commercial market chips, these have zero palm oil grease, just delicate rock salt and pure cold-pressed coconut oil flavor. Delivered super fresh to our door in Kazipet.",
+      "verified": true,
+      "productName": "NutriCrunch Banana Chips",
+      "createdAt": "2026-10-22T10:59:49.013Z",
+      "status": "published"
+    },
+    {
+      "id": "rev-03",
+      "name": "Ananya R.",
+      "location": "Warangal",
+      "rating": 5,
+      "comment": "Both the pure desi ghee panjiri and the Kerala-style banana chips are extraordinary! The panjiri gives our family long-lasting morning energy, and the chips are so light and crackling crisp. Proud to have such high quality food crafted locally!",
+      "verified": true,
+      "productName": "Panjiri & Banana Chips Combo",
+      "createdAt": "2026-10-27T10:59:49.013Z",
+      "status": "published"
+    }
+  ]
+}

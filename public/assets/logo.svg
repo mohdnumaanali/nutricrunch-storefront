@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ncGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#123D24" />
+      <stop offset="100%" stop-color="#1E5C36" />
+    </linearGradient>
+    <linearGradient id="ncGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5C766" />
+      <stop offset="100%" stop-color="#C79F32" />
+    </linearGradient>
+  </defs>
+
+  <!-- Botanical Leaf Icon -->
+  <g transform="translate(10, 12)">
+    <!-- Outer Leaf -->
+    <path d="M28 2 C44 2, 54 18, 52 34 C50 48, 36 56, 26 56 C24 44, 24 32, 28 2 Z" fill="#56783B" opacity="0.9" />
+    <!-- Inner Leaf -->
+    <path d="M26 56 C14 54, 4 42, 4 28 C4 14, 16 6, 28 2 C24 20, 24 38, 26 56 Z" fill="#123D24" />
+    <!-- Golden Sprout Leaf -->
+    <path d="M26 28 C34 22, 40 26, 42 34 C36 36, 30 32, 26 28 Z" fill="url(#ncGoldGrad)" />
+    <!-- Leaf Vein Line -->
+    <path d="M28 2 Q25 28 26 56" stroke="#FFF9E9" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6" />
+  </g>
+
+  <!-- Brand Wordmark -->
+  <text x="76" y="44" font-family="'Outfit', sans-serif" font-weight="800" font-size="34" letter-spacing="-0.5" fill="#123D24">
+    Nutri<tspan fill="#C76525">Crunch</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="78" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="9.5" letter-spacing="1.8" fill="#56783B" text-transform="uppercase">
+    Real Ingredients · Honest Goodness
+  </text>
+
+  <!-- Mini Gold Star Accent -->
+  <circle cx="288" cy="22" r="2.5" fill="#D8B84B" />
+</svg>

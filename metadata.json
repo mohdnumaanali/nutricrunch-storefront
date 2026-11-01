@@ -1,0 +1,8 @@
+{
+  "name": "NutriCrunch E-Commerce Store",
+  "description": "Production-ready e-commerce store for NutriCrunch — Real Ingredients. Honest Goodness. Natural dry fruits panjiri, banana chips, cart, checkout, order tracking, and private admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

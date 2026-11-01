@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bowlBg" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#FFFDF7" />
+      <stop offset="60%" stop-color="#F7EED2" />
+      <stop offset="100%" stop-color="#EADBBA" />
+    </radialGradient>
+    <radialGradient id="brassBowl" cx="40%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#EED58A" />
+      <stop offset="50%" stop-color="#C79F32" />
+      <stop offset="100%" stop-color="#735711" />
+    </radialGradient>
+    <filter id="shadowHeavy">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#141E11" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <rect width="600" height="600" fill="url(#bowlBg)" rx="24" />
+
+  <!-- Textured linen napkin backdrop -->
+  <polygon points="60,180 340,40 540,240 260,560" fill="#E8DEC4" opacity="0.4" />
+
+  <!-- Shadow below brass urli/bowl -->
+  <ellipse cx="300" cy="380" rx="210" ry="85" fill="#1B2B16" opacity="0.18" />
+
+  <!-- Artisanal Hand-Hammered Brass Urli / Katori -->
+  <g filter="url(#shadowHeavy)">
+    <ellipse cx="300" cy="310" rx="195" ry="120" fill="url(#brassBowl)" stroke="#A07E1F" stroke-width="4" />
+    <!-- Inner Rim Depth -->
+    <ellipse cx="300" cy="305" rx="180" ry="105" fill="#5E4307" />
+
+    <!-- Heap of Golden Desi Ghee Toasted Panjiri -->
+    <ellipse cx="300" cy="295" rx="170" ry="95" fill="#D3974C" />
+    <!-- Panjiri Mound Curvature -->
+    <path d="M140 290 Q300 200 460 290 Q300 360 140 290 Z" fill="#DEAB65" />
+    <path d="M165 285 Q300 220 435 285 Q300 340 165 285 Z" fill="#E8BC78" opacity="0.8" />
+
+    <!-- Garnishing Almonds (Badam) -->
+    <g transform="translate(240, 240) rotate(-15)">
+      <path d="M0 0 C15 -10, 35 -5, 42 12 C42 28, 25 32, 10 24 C-2 18, -6 6, 0 0 Z" fill="#8F4B18" stroke="#542807" stroke-width="1.5" />
+      <path d="M8 3 Q22 8 26 22" stroke="#B8733E" stroke-width="1.5" fill="none" />
+    </g>
+    <g transform="translate(320, 250) rotate(35)">
+      <path d="M0 0 C15 -10, 35 -5, 42 12 C42 28, 25 32, 10 24 C-2 18, -6 6, 0 0 Z" fill="#9C531D" stroke="#542807" stroke-width="1.5" />
+    </g>
+
+    <!-- Cashews (Kaju) -->
+    <g transform="translate(285, 290) rotate(10)">
+      <path d="M12 18 C14 8, 32 8, 38 18 C40 28, 30 42, 16 38 C24 33, 26 22, 12 18 Z" fill="#FDF3E3" stroke="#D1BE98" stroke-width="1.5" />
+    </g>
+    <g transform="translate(210, 300) rotate(-30)">
+      <path d="M12 18 C14 8, 32 8, 38 18 C40 28, 30 42, 16 38 C24 33, 26 22, 12 18 Z" fill="#FBF0DE" stroke="#D1BE98" stroke-width="1.5" />
+    </g>
+
+    <!-- Green Pistachios (Pista) -->
+    <circle cx="270" cy="270" r="9" fill="#69943B" stroke="#3D5A1E" stroke-width="1.5" />
+    <circle cx="370" cy="280" r="8" fill="#78A643" stroke="#3D5A1E" stroke-width="1.5" />
+    <circle cx="340" cy="315" r="7" fill="#69943B" stroke="#3D5A1E" stroke-width="1.5" />
+
+    <!-- Lotus Seeds (Phool Makhana) -->
+    <ellipse cx="225" cy="265" rx="14" ry="11" fill="#FFFBF2" stroke="#D9CBB4" stroke-width="1.5" />
+    <ellipse cx="360" cy="250" rx="13" ry="10" fill="#FFFBF2" stroke="#D9CBB4" stroke-width="1.5" />
+
+    <!-- Melon Seeds (Charmagaz) & Cardamom (Elaichi Pod) -->
+    <ellipse cx="300" cy="325" rx="5" ry="2" fill="#FAF6EC" stroke="#C2B295" stroke-width="0.8" />
+    <ellipse cx="308" cy="320" rx="5" ry="2" fill="#FAF6EC" stroke="#C2B295" stroke-width="0.8" />
+    <path d="M260 320 C264 314, 274 316, 276 324 C272 328, 264 326, 260 320 Z" fill="#719445" stroke="#375217" stroke-width="1" />
+  </g>
+
+  <!-- Editorial Caption Tag in Bottom Corner -->
+  <g transform="translate(40, 520)">
+    <rect x="0" y="0" width="280" height="42" rx="8" fill="#123D24" opacity="0.95" />
+    <text x="16" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="12" fill="#FFF9E9">
+      Hand-Roasted in Pure Cow Bilona Ghee
+    </text>
+  </g>
+</svg>
