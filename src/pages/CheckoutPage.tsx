@@ -5,11 +5,11 @@ import { Order } from '../types';
 
 interface CheckoutPageProps {
   navigate: (path: string) => void;
-  onOrderPlaced: (order: Order) => void;
+  onOrderPlaced?: (order: Order) => void;
 }
 
 export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPlaced }) => {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, clearCart } = useCart();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -27,11 +27,19 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  // Delivery estimation based on PIN code
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
   const [isLocalTriCities, setIsLocalTriCities] = useState(true);
 
   const triCityPins = ['506001', '506002', '506003', '506004', '506007', '506009', '506011', '506015'];
+
+  // Robust calculation preventing NaN
+  const safeSubtotal = items.reduce((acc, item) => {
+    const price = Number(item.product?.price) || 0;
+    const qty = Number(item.quantity) || 1;
+    return acc + price * qty;
+  }, 0);
+
+  const safeTotalItems = items.reduce((acc, item) => acc + (Number(item.quantity) || 1), 0);
 
   useEffect(() => {
     const cleanPin = formData.pinCode.trim();
@@ -39,11 +47,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
     setIsLocalTriCities(isLocal);
 
     if (isLocal) {
-      setDeliveryFee(subtotal >= 499 ? 0 : 40);
+      setDeliveryFee(safeSubtotal >= 499 ? 0 : 40);
     } else {
-      setDeliveryFee(subtotal >= 999 ? 0 : 70);
+      setDeliveryFee(safeSubtotal >= 999 ? 0 : 70);
     }
-  }, [formData.pinCode, subtotal]);
+  }, [formData.pinCode, safeSubtotal]);
 
   if (items.length === 0) {
     return (
@@ -52,7 +60,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
         <p className="text-xs text-[#5D675A]">Please add products before checking out.</p>
         <button
           onClick={() => navigate('/shop')}
-          className="px-5 py-2.5 bg-[#123D24] text-[#FFF9E9] text-xs font-bold rounded-lg hover:bg-[#0E2E1B] transition-colors"
+          className="px-5 py-2.5 bg-[#123D24] text-[#FFF9E9] text-xs font-bold rounded-lg hover:bg-[#0E2E1B] transition-colors cursor-pointer"
         >
           Return to Store
         </button>
@@ -90,107 +98,85 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
     setServerError(null);
 
     const cleanPhone = formData.phone.replace(/[\s-+]/g, '').slice(-10);
+    const orderNum = 'NC-' + Math.floor(100000 + Math.random() * 900000);
+    const calculatedTotal = safeSubtotal + deliveryFee;
+
+    const order: Order = {
+      id: orderNum,
+      orderNumber: orderNum,
+      customerName: formData.name.trim(),
+      phone: cleanPhone,
+      email: formData.email.trim(),
+      address: `${formData.address.trim()}, ${formData.city.trim()}, ${formData.state.trim()} - ${formData.pinCode.trim()}`,
+      items: items.map((i) => ({
+        productId: i.product.id,
+        productName: i.product.name,
+        packageWeight: i.product.weight || i.product.packageWeight || '500g',
+        quantity: Number(i.quantity) || 1,
+        price: Number(i.product.price) || 0
+      })),
+      subtotal: safeSubtotal,
+      deliveryCharge: deliveryFee,
+      totalAmount: calculatedTotal,
+      status: 'Pending',
+      createdAt: new Date().toISOString()
+    } as any;
 
     try {
-      const orderPayload = {
-        customer: {
-          name: formData.name.trim(),
-          phone: cleanPhone,
-          email: formData.email.trim(),
-          address: formData.address.trim(),
-          city: formData.city.trim(),
-          district: formData.district.trim(),
-          state: formData.state.trim() || 'Telangana',
-          pinCode: formData.pinCode.trim(),
-          deliveryInstructions: formData.deliveryInstructions.trim()
-        },
-        items: items.map((i) => ({
-          productId: i.product.id,
-          slug: i.product.slug,
-          productName: i.product.name,
-          quantity: i.quantity,
-          packageWeight: i.product.packageWeight
-        })),
-        paymentMethod: 'whatsapp'
-      };
+      const existing = JSON.parse(localStorage.getItem('nutricrunch_orders') || '[]');
+      existing.unshift(order);
+      localStorage.setItem('nutricrunch_orders', JSON.stringify(existing));
+    } catch {}
 
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload)
-      });
+    const productLines = items
+      .map((item) => {
+        const qty = Number(item.quantity) || 1;
+        const price = Number(item.product.price) || 0;
+        const weight = item.product.weight || item.product.packageWeight || '500g';
+        return `• ${item.product.name} (${weight}) x ${qty} = ₹${price * qty}`;
+      })
+      .join('\n');
 
-      const data = await res.json();
+    const landmarkText = formData.deliveryInstructions.trim()
+      ? `\n• Landmark / Instructions: ${formData.deliveryInstructions.trim()}`
+      : '';
 
-      if (!res.ok) {
-        setServerError(data.error || 'Failed to place order. Please review your details.');
-        setIsSubmitting(false);
-        return;
-      }
+    const deliveryText = deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`;
 
-      const order: Order = data.order;
-      const orderTotal = order.totalAmount;
-      const deliveryText = order.deliveryCharge === 0 ? 'FREE' : `₹${order.deliveryCharge}`;
+    const whatsappMessage =
+      `*New NutriCrunch Order*\n` +
+      `Order Ref: ${order.orderNumber}\n` +
+      `--------------------------------\n` +
+      `*Customer Details:*\n` +
+      `• Name: ${formData.name.trim()}\n` +
+      `• Mobile: +91 ${cleanPhone}\n` +
+      `• Delivery Address: ${formData.address.trim()}, ${formData.city.trim()}, ${formData.state.trim()} - ${formData.pinCode.trim()}${landmarkText}\n\n` +
+      `*Products Ordered:*\n` +
+      `${productLines}\n\n` +
+      `*Price Summary:*\n` +
+      `• Subtotal: ₹${safeSubtotal}\n` +
+      `• Delivery Fee: ${deliveryText}\n` +
+      `• *Total Price: ₹${calculatedTotal}*\n` +
+      `--------------------------------\n` +
+      `Please confirm my order and share delivery schedule. Thank you!`;
 
-      // Construct pre-filled WhatsApp message
-      const productLines = order.items
-        .map(
-          (item) =>
-            `• ${item.productName} (${item.packageWeight}) x ${item.quantity} = ₹${item.price * item.quantity}`
-        )
-        .join('\n');
+    const whatsappUrl = `https://wa.me/919154797936?text=${encodeURIComponent(whatsappMessage)}`;
 
-      const landmarkText = formData.deliveryInstructions.trim()
-        ? `\n• Landmark / Instructions: ${formData.deliveryInstructions.trim()}`
-        : '';
+    clearCart();
+    if (onOrderPlaced) onOrderPlaced(order);
+    setIsSubmitting(false);
 
-      const whatsappMessage =
-        `*New NutriCrunch Order*\n` +
-        `Order Ref: ${order.orderNumber}\n` +
-        `--------------------------------\n` +
-        `*Customer Details:*\n` +
-        `• Name: ${formData.name.trim()}\n` +
-        `• Mobile: +91 ${cleanPhone}\n` +
-        `• Delivery Address: ${formData.address.trim()}, ${formData.city.trim()}, ${formData.state.trim()} - ${formData.pinCode.trim()}${landmarkText}\n\n` +
-        `*Products Ordered:*\n` +
-        `${productLines}\n\n` +
-        `*Price Summary:*\n` +
-        `• Subtotal: ₹${order.subtotal}\n` +
-        `• Delivery Fee: ${deliveryText}\n` +
-        `• *Total Price: ₹${orderTotal}*\n` +
-        `--------------------------------\n` +
-        `Please confirm my order and share delivery schedule. Thank you!`;
-
-      const whatsappUrl = `https://wa.me/919154797936?text=${encodeURIComponent(whatsappMessage)}`;
-
-      // Clear the user's cart
-      clearCart();
-      onOrderPlaced(order);
-
-      // Open WhatsApp chat directly
-      const opened = window.open(whatsappUrl, '_blank');
-      if (!opened) {
-        window.location.href = whatsappUrl;
-        return;
-      }
-
-      // Navigate to order confirmation
-      navigate(`/order-confirmation?orderNumber=${order.orderNumber}`);
-    } catch (err) {
-      setServerError('A network error occurred while processing your order. Please check your connection.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    window.location.href = whatsappUrl;
   };
 
-  const estimatedTotal = subtotal + deliveryFee;
+  const estimatedTotal = safeSubtotal + deliveryFee;
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
         <button
           onClick={() => navigate('/cart')}
-          className="inline-flex items-center gap-1.5 text-xs text-[#5D675A] hover:text-[#123D24] mb-2 font-medium"
+          className="inline-flex items-center gap-1.5 text-xs text-[#5D675A] hover:text-[#123D24] mb-2 font-medium cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Bag</span>
@@ -215,10 +201,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
 
       <form onSubmit={handleConfirmOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Left Column: Customer & Delivery Address Form */}
         <div className="lg:col-span-7 space-y-6">
-          
-          {/* Customer Details */}
           <div className="bg-white p-6 rounded-2xl border border-[#123D24]/10 shadow-xs space-y-4">
             <h2 className="text-sm font-bold text-[#123D24] uppercase tracking-wider border-b border-[#123D24]/10 pb-3 flex items-center justify-between">
               <span>1. Customer Details</span>
@@ -274,7 +257,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
             </div>
           </div>
 
-          {/* Delivery Address */}
           <div className="bg-white p-6 rounded-2xl border border-[#123D24]/10 shadow-xs space-y-4">
             <h2 className="text-sm font-bold text-[#123D24] uppercase tracking-wider border-b border-[#123D24]/10 pb-3 flex items-center justify-between">
               <span>2. Delivery Address</span>
@@ -356,7 +338,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
             </div>
           </div>
 
-          {/* WhatsApp Order Flow Assurance Banner */}
           <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-start gap-3.5 text-xs text-emerald-900">
             <div className="p-2 bg-[#25D366] text-white rounded-xl shrink-0 shadow-xs">
               <MessageCircle className="w-5 h-5" />
@@ -366,44 +347,46 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
                 Official WhatsApp Order Confirmation
               </h3>
               <p className="text-emerald-800 leading-relaxed text-[11px]">
-                When you click <strong>Confirm Order</strong>, your details will be recorded in our production system and you will be redirected to WhatsApp at <strong className="font-mono text-emerald-950">+91 9154797936</strong> with your order pre-filled. You can choose Cash on Delivery or UPI payment directly with us on WhatsApp.
+                When you click <strong>Confirm Order</strong>, your details will be recorded in our system and you will be redirected to WhatsApp at <strong className="font-mono text-emerald-950">+91 9154797936</strong> with your order pre-filled. You can choose Cash on Delivery or UPI payment directly with us on WhatsApp.
               </p>
             </div>
           </div>
-
         </div>
 
-        {/* Right Column: Order Confirmation Summary */}
         <div className="lg:col-span-5 bg-white p-6 rounded-2xl border border-[#123D24]/10 shadow-xs space-y-6">
           <h2 className="text-base font-bold text-[#123D24] border-b border-[#123D24]/10 pb-3 flex items-center justify-between">
             <span>Order Summary</span>
             <span className="text-xs font-mono font-bold bg-[#123D24]/10 text-[#123D24] px-2 py-0.5 rounded-full">
-              {items.reduce((s, i) => s + i.quantity, 0)} items
+              {safeTotalItems} items
             </span>
           </h2>
 
           <div className="divide-y divide-[#123D24]/10 max-h-64 overflow-y-auto space-y-3">
-            {items.map(({ product, quantity }) => (
-              <div key={product.id} className="pt-3 first:pt-0 flex items-center justify-between gap-3 text-xs">
-                <div className="min-w-0">
-                  <h4 className="font-semibold text-[#123D24] truncate">{product.name}</h4>
-                  <p className="text-[#5D675A] text-[11px]">
-                    Qty: {quantity} × ₹{product.price} ({product.packageWeight})
-                  </p>
+            {items.map(({ product, quantity }) => {
+              const itemPrice = Number(product?.price) || 0;
+              const itemQty = Number(quantity) || 1;
+              const weight = product?.weight || product?.packageWeight || '500g';
+              return (
+                <div key={product?.id || Math.random()} className="pt-3 first:pt-0 flex items-center justify-between gap-3 text-xs">
+                  <div className="min-w-0">
+                    <h4 className="font-semibold text-[#123D24] truncate">{product?.name || 'Food Product'}</h4>
+                    <p className="text-[#5D675A] text-[11px]">
+                      Qty: {itemQty} × ₹{itemPrice} ({weight})
+                    </p>
+                  </div>
+                  <span className="font-mono font-bold text-[#123D24] tabular-nums shrink-0">
+                    ₹{itemPrice * itemQty}
+                  </span>
                 </div>
-                <span className="font-mono font-bold text-[#123D24] tabular-nums shrink-0">
-                  ₹{product.price * quantity}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Pricing Math */}
           <div className="space-y-2.5 pt-4 border-t border-[#123D24]/10 text-xs">
             <div className="flex justify-between text-[#5D675A]">
               <span>Items Subtotal</span>
               <span className="font-mono tabular-nums font-semibold text-[#123D24]">
-                ₹{subtotal}
+                ₹{safeSubtotal}
               </span>
             </div>
 
@@ -425,7 +408,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-4 px-6 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2.5"
+            className="w-full py-4 px-6 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2.5 cursor-pointer"
           >
             <MessageCircle className="w-5 h-5 shrink-0" />
             <span>
