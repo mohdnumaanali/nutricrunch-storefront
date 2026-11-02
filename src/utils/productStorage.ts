@@ -3,7 +3,7 @@ import { Product } from '../types';
 export const CATALOG_STORAGE_KEY = 'nutricrunch_custom_catalog';
 export const CATALOG_UPDATED_EVENT = 'nutricrunch_catalog_updated';
 
-// Default NutriCrunch Product Catalog Fallback
+// Default products bundled in code
 export const INITIAL_PRODUCTS: Product[] = [
   {
     id: '1',
@@ -30,7 +30,8 @@ export const INITIAL_PRODUCTS: Product[] = [
 ];
 
 /**
- * Retrieve saved product catalog from browser localStorage, falling back to default products.
+ * Retrieves catalog. Returns saved admin changes if present in localStorage,
+ * otherwise falls back to INITIAL_PRODUCTS.
  */
 export function getStoredCatalog(): Product[] {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -42,7 +43,9 @@ export function getStoredCatalog(): Product[] {
     if (!raw) return INITIAL_PRODUCTS;
 
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
+    if (Array.isArray(parsed)) {
+      if (parsed.length === 0) return []; // Admin explicitly removed all products
+
       const isValid = parsed.every(
         (item) => item && typeof item === 'object' && item.id && item.name && typeof item.price === 'number'
       );
@@ -56,12 +59,8 @@ export function getStoredCatalog(): Product[] {
   return INITIAL_PRODUCTS;
 }
 
-export function getStoredProducts(): Promise<Product[]> {
-  return Promise.resolve(getStoredCatalog());
-}
-
 /**
- * Save the entire updated product catalog directly to browser localStorage immediately.
+ * Saves modified product list (from Admin panel) to browser localStorage.
  */
 export function saveStoredCatalog(products: Product[]): boolean {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -87,7 +86,7 @@ export function saveStoredCatalog(products: Product[]): boolean {
 }
 
 /**
- * Clear the custom product catalog from browser localStorage.
+ * Clears custom catalog from localStorage and restores INITIAL_PRODUCTS.
  */
 export function clearStoredCatalog(): void {
   if (typeof window === 'undefined' || !window.localStorage) return;
@@ -114,16 +113,17 @@ export function getCatalogStorageStats(): {
   formattedSize: string;
 } {
   if (typeof window === 'undefined' || !window.localStorage) {
-    return { isCustom: false, count: 0, sizeBytes: 0, formattedSize: '0 KB' };
+    return { isCustom: false, count: INITIAL_PRODUCTS.length, sizeBytes: 0, formattedSize: '0 KB' };
   }
 
   try {
     const raw = window.localStorage.getItem(CATALOG_STORAGE_KEY);
     if (!raw) {
-      return { isCustom: false, count: 0, sizeBytes: 0, formattedSize: '0 KB' };
+      return { isCustom: false, count: INITIAL_PRODUCTS.length, sizeBytes: 0, formattedSize: '0 KB' };
     }
 
-    const count = (JSON.parse(raw) as any[]).length;
+    const parsed = JSON.parse(raw);
+    const count = Array.isArray(parsed) ? parsed.length : 0;
     const sizeBytes = new Blob([raw]).size;
     const formattedSize =
       sizeBytes > 1024 * 1024
@@ -137,6 +137,6 @@ export function getCatalogStorageStats(): {
       formattedSize
     };
   } catch {
-    return { isCustom: false, count: 0, sizeBytes: 0, formattedSize: '0 KB' };
+    return { isCustom: false, count: INITIAL_PRODUCTS.length, sizeBytes: 0, formattedSize: '0 KB' };
   }
 }
