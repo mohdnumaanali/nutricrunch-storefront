@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+  useParams,
+  useSearchParams
+} from 'react-router-dom';
+
 import { CartProvider } from './context/CartContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { WhatsAppFloatingButton } from './components/WhatsAppFloatingButton';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
@@ -28,10 +39,41 @@ import {
   CATALOG_UPDATED_EVENT
 } from './utils/productStorage';
 
+// Parameterized wrapper for ProductDetailPage to extract slug from route params
+function ProductDetailPageWrapper({
+  products,
+  navigate
+}: {
+  products: Product[];
+  navigate: (path: string) => void;
+}) {
+  const { slug } = useParams<{ slug: string }>();
+  return <ProductDetailPage slug={slug || ''} products={products} navigate={navigate} />;
+}
+
+// Wrapper for ShopPage to read optional category search query param
+function ShopPageWrapper({
+  products,
+  navigate
+}: {
+  products: Product[];
+  navigate: (path: string) => void;
+}) {
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'All';
+  return <ShopPage products={products} navigate={navigate} initialCategory={initialCategory} />;
+}
+
+// Wrapper for TrackOrderPage to read optional orderNumber search query param
+function TrackOrderPageWrapper({ navigate }: { navigate: (path: string) => void }) {
+  const [searchParams] = useSearchParams();
+  const initialOrderNumber = searchParams.get('orderNumber') || '';
+  return <TrackOrderPage initialOrderNumber={initialOrderNumber} navigate={navigate} />;
+}
+
 export default function App() {
-  const [currentPath, setCurrentPath] = useState<string>(() => {
-    return window.location.pathname || '/';
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Requirement: Check localStorage first on app startup or refresh
   const [products, setProducts] = useState<Product[]>(() => {
@@ -43,33 +85,21 @@ export default function App() {
   });
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
 
-  // Sync route on popstate (browser back/forward)
+  // Scroll to top & record privacy-conscious analytics on route transitions
   useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname || '/');
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const navigate = (path: string) => {
-    window.history.pushState({}, '', path);
-    setCurrentPath(path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Privacy-conscious first-party analytics track
     try {
       fetch('/api/analytics/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: 'pageview',
-          path,
+          path: location.pathname,
           sessionId: sessionStorage.getItem('nc_session_id') || 'sess_direct'
         })
       }).catch(() => {});
     } catch {}
-  };
+  }, [location.pathname]);
 
   // Fetch verified products: checks localStorage first, falls back to server, and syncs
   const fetchProducts = async () => {
@@ -150,96 +180,87 @@ export default function App() {
     };
   }, []);
 
-  // Simple route matcher
-  const renderRoute = () => {
-    // 1. Admin Routes
-    if (currentPath === '/admin/login') {
-      return <AdminLoginPage navigate={navigate} />;
-    }
-    if (currentPath.startsWith('/admin')) {
-      return <AdminDashboardPage navigate={navigate} onProductsUpdated={fetchProducts} />;
-    }
-
-    // 2. Product Detail Route (/product/:slug)
-    if (currentPath.startsWith('/product/')) {
-      const slug = currentPath.replace('/product/', '');
-      return <ProductDetailPage slug={slug} products={products} navigate={navigate} />;
-    }
-
-    // 3. Shop All
-    if (currentPath.startsWith('/shop')) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const cat = urlParams.get('category') || 'All';
-      return <ShopPage products={products} navigate={navigate} initialCategory={cat} />;
-    }
-
-    // 4. Cart & Checkout
-    if (currentPath === '/cart') {
-      return <CartPage navigate={navigate} />;
-    }
-    if (currentPath === '/checkout') {
-      return (
-        <CheckoutPage
-          navigate={navigate}
-          onOrderPlaced={(order) => setConfirmedOrder(order)}
-        />
-      );
-    }
-    if (currentPath.startsWith('/order-confirmation')) {
-      return <OrderConfirmationPage order={confirmedOrder} navigate={navigate} />;
-    }
-
-    // 5. Track Order
-    if (currentPath.startsWith('/track-order')) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const ordNum = urlParams.get('orderNumber') || '';
-      return <TrackOrderPage initialOrderNumber={ordNum} navigate={navigate} />;
-    }
-
-    // 6. Content & Policies
-    if (currentPath === '/about') {
-      return <AboutPage navigate={navigate} />;
-    }
-    if (currentPath === '/ingredients') {
-      return <IngredientsPage navigate={navigate} />;
-    }
-    if (currentPath === '/contact') {
-      return <ContactPage />;
-    }
-    if (currentPath === '/faqs') {
-      return <FaqPage navigate={navigate} />;
-    }
-    if (currentPath === '/policies/shipping') {
-      return <PoliciesPage policyType="shipping" navigate={navigate} />;
-    }
-    if (currentPath === '/policies/returns') {
-      return <PoliciesPage policyType="returns" navigate={navigate} />;
-    }
-    if (currentPath === '/policies/privacy') {
-      return <PoliciesPage policyType="privacy" navigate={navigate} />;
-    }
-    if (currentPath === '/policies/terms') {
-      return <PoliciesPage policyType="terms" navigate={navigate} />;
-    }
-
-    // 7. Default Homepage
-    return <HomePage products={products} navigate={navigate} />;
-  };
-
-  const isAdminRoute = currentPath.startsWith('/admin');
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <AdminAuthProvider>
       <CartProvider>
         <div className="min-h-screen flex flex-col bg-[#FFF9E9] text-[#20251F] font-sans antialiased">
-          
-          {/* Header (hidden inside admin dashboard for focused workspace) */}
+          {/* Header (hidden inside admin workspace for clean management layout) */}
           {!isAdminRoute && (
-            <Header currentPath={currentPath} navigate={navigate} />
+            <Header currentPath={location.pathname} navigate={navigate} />
           )}
 
-          {/* Main Page Content */}
-          <main className="flex-1">{renderRoute()}</main>
+          {/* Main Route Content */}
+          <main className="flex-1">
+            <Routes>
+              {/* Core Storefront Routes */}
+              <Route path="/" element={<HomePage products={products} navigate={navigate} />} />
+              <Route
+                path="/shop"
+                element={<ShopPageWrapper products={products} navigate={navigate} />}
+              />
+              <Route
+                path="/product/:slug"
+                element={<ProductDetailPageWrapper products={products} navigate={navigate} />}
+              />
+              <Route path="/cart" element={<CartPage navigate={navigate} />} />
+              <Route
+                path="/checkout"
+                element={
+                  <CheckoutPage
+                    navigate={navigate}
+                    onOrderPlaced={(order) => setConfirmedOrder(order)}
+                  />
+                }
+              />
+              <Route
+                path="/order-confirmation"
+                element={<OrderConfirmationPage order={confirmedOrder} navigate={navigate} />}
+              />
+              <Route
+                path="/track-order"
+                element={<TrackOrderPageWrapper navigate={navigate} />}
+              />
+
+              {/* Informational & Policy Pages */}
+              <Route path="/about" element={<AboutPage navigate={navigate} />} />
+              <Route path="/ingredients" element={<IngredientsPage navigate={navigate} />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/faqs" element={<FaqPage navigate={navigate} />} />
+              <Route
+                path="/policies/shipping"
+                element={<PoliciesPage policyType="shipping" navigate={navigate} />}
+              />
+              <Route
+                path="/policies/returns"
+                element={<PoliciesPage policyType="returns" navigate={navigate} />}
+              />
+              <Route
+                path="/policies/privacy"
+                element={<PoliciesPage policyType="privacy" navigate={navigate} />}
+              />
+              <Route
+                path="/policies/terms"
+                element={<PoliciesPage policyType="terms" navigate={navigate} />}
+              />
+
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLoginPage navigate={navigate} />} />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboardPage onProductsUpdated={fetchProducts} navigate={navigate} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+
+              {/* Catch-all Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
 
           {/* Footer (hidden inside admin dashboard) */}
           {!isAdminRoute && <Footer navigate={navigate} />}
@@ -249,7 +270,6 @@ export default function App() {
 
           {/* Accessible WhatsApp Contact Floating Button (Storefront only) */}
           {!isAdminRoute && <WhatsAppFloatingButton />}
-
         </div>
       </CartProvider>
     </AdminAuthProvider>

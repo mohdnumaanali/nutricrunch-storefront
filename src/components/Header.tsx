@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X, PhoneCall, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 interface HeaderProps {
-  currentPath: string;
-  navigate: (path: string) => void;
+  currentPath?: string;
+  navigate?: (path: string) => void;
   onOpenSearch?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentPath, navigate, onOpenSearch }) => {
+export const Header: React.FC<HeaderProps> = ({
+  currentPath: propCurrentPath,
+  navigate: propNavigate,
+  onOpenSearch
+}) => {
+  const routerNavigate = useNavigate();
+  const location = useLocation();
+  const navigate = propNavigate || routerNavigate;
+  const currentPath = propCurrentPath || location.pathname;
+
   const { itemCount, setIsCartOpen } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

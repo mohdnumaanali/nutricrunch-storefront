@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Lock, Mail, ShieldAlert, ArrowRight } from 'lucide-react';
 import { useAdminAuth } from '../context/AdminAuthContext';
 
 interface AdminLoginPageProps {
-  navigate: (path: string) => void;
+  navigate?: (path: string) => void;
 }
 
-export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ navigate }) => {
+export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ navigate: propNavigate }) => {
+  const routerNavigate = useNavigate();
+  const location = useLocation();
+  const navigate = propNavigate || routerNavigate;
   const { login, isAuthenticated } = useAdminAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,8 +18,8 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ navigate }) => {
   const [error, setError] = useState<string | null>(null);
 
   if (isAuthenticated) {
-    navigate('/admin/dashboard');
-    return null;
+    const from = (location.state as any)?.from?.pathname || '/admin/dashboard';
+    return <Navigate to={from} replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +31,8 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ navigate }) => {
     setIsLoading(false);
 
     if (result.success) {
-      navigate('/admin/dashboard');
+      const from = (location.state as any)?.from?.pathname || '/admin/dashboard';
+      navigate(from);
     } else {
       setError(result.error || 'Invalid credentials');
     }
