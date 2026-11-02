@@ -98,16 +98,10 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('All');
   const [orderSearch, setOrderSearch] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [newOrderStatus, setNewOrderStatus] = useState<string>('');
-  const [statusNote, setStatusNote] = useState<string>('');
-  const [refundReason, setRefundReason] = useState<string>('');
-  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
 
   // Inquiries & Customer Feedback State
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [reviews, setReviews] = useState<CustomerReview[]>(() => getStoredReviews());
-  const [inquirySubTab, setInquirySubTab] = useState<'reviews' | 'inquiries'>('reviews');
-  const [reviewSearch, setReviewSearch] = useState('');
 
   // Settings State
   const [settings, setSettings] = useState<StoreSettings | null>({
@@ -117,7 +111,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     whatsapp: '919154797936',
     serviceZones: [{ name: 'Tri-Cities', fee: 40, freeAbove: 499 }]
   });
-  const [settingsSavedMessage, setSettingsSavedMessage] = useState<string | null>(null);
 
   // Image Upload State
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -141,10 +134,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showCurrentPass, setShowCurrentPass] = useState(false);
-  const [showNewPass, setShowNewPass] = useState(false);
-  const [showConfirmPass, setShowConfirmPass] = useState(false);
-  const [isSavingAccount, setIsSavingAccount] = useState(false);
   const [accountFeedback, setAccountFeedback] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -188,6 +177,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     setFeedback({ type, message });
     setTimeout(() => setFeedback(null), 4000);
   };
+
+  const getHeaders = () => ({
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  });
 
   const loadSupabaseStatus = async () => {
     try {
@@ -250,19 +244,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
           images: [base64Data, ...(prev.images?.slice(1) || [])]
         }));
 
-        if (editingProduct) {
-          const updatedCatalog = products.map((p) =>
-            p.id === editingProduct.id
-              ? { ...p, images: [base64Data, ...(p.images?.slice(1) || [])] }
-              : p
-          );
-          setProducts(updatedCatalog);
-          saveStoredCatalog(updatedCatalog);
-          setStorageStats(getCatalogStorageStats());
-          if (onProductsUpdated) onProductsUpdated();
-        }
-
-        showFeedback('success', 'Image successfully saved and persisted in browser storage!');
+        showFeedback('success', 'Image uploaded successfully!');
       } catch (uploadErr) {
         showFeedback('error', 'Error reading image file');
       } finally {
@@ -272,11 +254,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     };
     reader.readAsDataURL(file);
   };
-
-  const getHeaders = () => ({
-    'Content-[#123D24]Type': 'application/json',
-    Authorization: `Bearer ${token}`
-  });
 
   const loadAnalytics = async () => {
     setIsLoadingAnalytics(true);
@@ -375,16 +352,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     showFeedback('success', `Review from "${customerName}" removed.`);
   };
 
-  const handleToggleReviewVerified = async (rev: CustomerReview) => {
-    const nextVerified = !rev.verified;
-    const updated = reviews.map((r) =>
-      r.id === rev.id ? { ...r, verified: nextVerified } : r
-    );
-    setReviews(updated);
-    saveStoredReviews(updated);
-    showFeedback('success', `Verification status updated for "${rev.name}".`);
-  };
-
   const loadSettings = async () => {
     try {
       const res = await fetch('/api/settings');
@@ -407,6 +374,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
       originalPrice: 599,
       packageWeight: '500g',
       stock: 50,
+      sku: `NC-${Math.floor(1000 + Math.random() * 9000)}`,
       description: '',
       ingredients: ['California Almonds', 'Pure Cow Desi Ghee', 'Organic Jaggery'],
       allergenInfo: 'Contains Tree Nuts and Dairy.',
@@ -455,13 +423,13 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
         category: productForm.category || 'Traditional Panjiri',
         ingredients: productForm.ingredients || [],
         allergenInfo: productForm.allergenInfo || 'None reported',
-        packageWeight: productForm.packageWeight || '250g',
+        packageWeight: productForm.packageWeight || '500g',
         stock: Number(productForm.stock ?? 50),
         sku: productForm.sku || `NC-${Date.now().toString().slice(-4)}`,
         published: productForm.published !== undefined ? Boolean(productForm.published) : true,
         isFeatured: Boolean(productForm.isFeatured),
         dietary: productForm.dietary || ['100% Vegetarian'],
-        shelfLife: productForm.shelfLife || '3 Months',
+        shelfLife: productForm.shelfLife || '4 Months',
         storageInstructions: productForm.storageInstructions || 'Store in a cool, dry place.',
         images:
           productForm.images && productForm.images.length > 0
@@ -529,31 +497,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     }
   };
 
-  // ================= ORDERS MANAGEMENT =================
-  const handleUpdateOrderStatus = async () => {
-    if (!selectedOrder || !newOrderStatus) return;
-
-    const updatedOrders = orders.map((o) =>
-      o.id === selectedOrder.id ? { ...o, orderStatus: newOrderStatus } : o
-    );
-    setOrders(updatedOrders);
-    localStorage.setItem('nutricrunch_orders', JSON.stringify(updatedOrders));
-    showFeedback('success', `Order status updated to ${newOrderStatus}`);
-    setSelectedOrder(null);
-  };
-
-  const handleProcessRefund = async () => {
-    if (!selectedOrder) return;
-    const updatedOrders = orders.map((o) =>
-      o.id === selectedOrder.id ? { ...o, orderStatus: 'Refunded' } : o
-    );
-    setOrders(updatedOrders);
-    localStorage.setItem('nutricrunch_orders', JSON.stringify(updatedOrders));
-    showFeedback('success', `Refund recorded for ${selectedOrder.orderNumber}`);
-    setIsRefundModalOpen(false);
-    setSelectedOrder(null);
-  };
-
   const handleExportCSV = () => {
     if (orders.length === 0) {
       showFeedback('error', 'No orders to export.');
@@ -581,12 +524,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     link.click();
     document.body.removeChild(link);
     showFeedback('success', 'Orders exported to CSV!');
-  };
-
-  const handleSaveSettings = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSettingsSavedMessage('Store settings updated successfully!');
-    setTimeout(() => setSettingsSavedMessage(null), 4000);
   };
 
   const handleUpdateAccount = async (e: React.FormEvent) => {
@@ -662,7 +599,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F4EB] text-[#20251F] flex flex-col">
+    <div className="min-h-screen bg-[#F7F4EB] text-[#20251F] flex flex-col font-sans">
       
       {/* Top Bar */}
       <header className="bg-[#123D24] text-[#FFF9E9] px-4 sm:px-6 py-3.5 border-b border-[#0B2516] flex items-center justify-between gap-4">
@@ -683,7 +620,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => setActiveTab('account')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
               activeTab === 'account'
                 ? 'bg-[#FFF9E9] text-[#123D24] shadow-xs font-bold'
                 : 'bg-[#FFF9E9]/10 text-[#FFF9E9] hover:bg-[#FFF9E9]/20'
@@ -695,7 +632,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
 
           <button
             onClick={() => navigate('/')}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF9E9]/10 text-[#FFF9E9] text-xs font-semibold rounded-lg hover:bg-[#FFF9E9]/20 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#FFF9E9]/10 text-[#FFF9E9] text-xs font-semibold rounded-lg hover:bg-[#FFF9E9]/20 transition-colors cursor-pointer"
           >
             <span>Live Storefront</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -703,7 +640,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
 
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-900/60 text-rose-200 text-xs font-semibold rounded-lg hover:bg-rose-900 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-900/60 text-rose-200 text-xs font-semibold rounded-lg hover:bg-rose-900 transition-colors cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Sign Out</span>
@@ -848,7 +785,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
               </div>
             </div>
 
-            {/* KPI Stat Cards (Always Renders) */}
+            {/* KPI Stat Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-[#123D24]/10 shadow-xs space-y-1">
                 <span className="text-[11px] font-bold text-[#56783B] uppercase tracking-wider block">
@@ -998,7 +935,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                   className="px-4 py-2 bg-[#123D24] text-[#FFF9E9] text-xs font-bold rounded-xl hover:bg-[#0E2E1B] transition-colors flex items-center gap-2 shadow-xs cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Add New Product</span>
+                  <span>Add New Food Product</span>
                 </button>
               </div>
             </div>
@@ -1026,15 +963,15 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                             <img
                               src={p.images?.[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}
                               alt={p.name}
-                              className="w-10 h-10 object-cover rounded-lg bg-[#FFF9E9] border shrink-0"
+                              className="w-10 h-10 object-cover rounded-lg bg-[#FFF9E9] border border-[#123D24]/10 shrink-0"
                             />
                             <div>
-                              <strong className="text-[#123D24] block">{p.name}</strong>
+                              <strong className="text-[#123D24] block font-bold">{p.name}</strong>
                               <span className="text-[11px] font-mono text-[#5D675A]">{p.sku || p.id}</span>
                             </div>
                           </div>
                         </td>
-                        <td className="py-3 px-4 text-[#5D675A]">{p.category}</td>
+                        <td className="py-3 px-4 text-[#5D675A] font-medium">{p.category}</td>
                         <td className="py-3 px-4 font-mono font-bold text-[#123D24]">₹{p.price}</td>
                         <td className="py-3 px-4 font-mono font-bold text-emerald-700">{p.stock ?? 50} units</td>
                         <td className="py-3 px-4 text-[#5D675A]">{p.packageWeight || p.weight || '500g'}</td>
@@ -1052,13 +989,15 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => openEditProductModal(p)}
-                              className="p-1.5 text-[#123D24] hover:bg-[#FFF9E9] rounded-lg cursor-pointer"
+                              className="p-1.5 text-[#123D24] hover:bg-[#FFF9E9] rounded-lg cursor-pointer transition-colors"
+                              title="Edit product"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeleteProduct(p.id, p.name)}
-                              className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
+                              className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                              title="Delete product"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -1080,7 +1019,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
               <h3 className="font-bold text-sm text-[#123D24]">Store Orders & Deliveries</h3>
               <button
                 onClick={handleExportCSV}
-                className="px-4 py-2 bg-white border border-[#123D24]/20 text-[#123D24] text-xs font-bold rounded-xl hover:bg-[#FFF9E9] flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 bg-white border border-[#123D24]/20 text-[#123D24] text-xs font-bold rounded-xl hover:bg-[#FFF9E9] flex items-center gap-2 cursor-pointer transition-colors"
               >
                 <Download className="w-4 h-4" /> Export CSV
               </button>
@@ -1129,7 +1068,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                   </div>
                   <button
                     onClick={() => handleDeleteReview(r.id, r.name)}
-                    className="text-rose-600 hover:text-rose-800 cursor-pointer"
+                    className="text-rose-600 hover:text-rose-800 cursor-pointer font-semibold"
                   >
                     Delete
                   </button>
@@ -1145,9 +1084,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
             <h3 className="font-bold text-sm text-[#123D24]">Catalog Maintenance</h3>
             <button
               onClick={handleResetCatalog}
-              className="px-4 py-2 bg-rose-600 text-white text-xs font-bold rounded-xl hover:bg-rose-700 cursor-pointer"
+              className="px-4 py-2 bg-rose-600 text-white text-xs font-bold rounded-xl hover:bg-rose-700 cursor-pointer transition-colors"
             >
-              Reset Catalog to Defaults
+              Reset Catalog to Factory Defaults
             </button>
           </div>
         )}
@@ -1156,7 +1095,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
         {activeTab === 'audit' && (
           <div className="bg-white p-6 rounded-2xl border border-[#123D24]/10 space-y-3 text-xs">
             <h3 className="font-bold text-sm text-[#123D24]">Security Audit Trail</h3>
-            <div className="p-3 bg-slate-50 rounded-xl font-mono">
+            <div className="p-3 bg-slate-50 rounded-xl font-mono border border-slate-200">
               [LOG] Session initialized for superadmin ({admin?.email || 'admin'})
             </div>
           </div>
@@ -1172,7 +1111,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                 type="text"
                 value={accountEmail}
                 onChange={(e) => setAccountEmail(e.target.value)}
-                className="w-full px-3 py-2 text-xs border rounded-xl"
+                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl"
               />
             </div>
             <div>
@@ -1182,7 +1121,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 text-xs border rounded-xl"
+                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl"
               />
             </div>
             <button type="submit" className="px-4 py-2 bg-[#123D24] text-white text-xs font-bold rounded-xl cursor-pointer">
@@ -1195,38 +1134,39 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
 
       {/* ================= MODAL: ADD / EDIT PRODUCT ================= */}
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-xl rounded-3xl p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="font-bold text-base text-[#123D24]">
-                {editingProduct ? `Edit ${editingProduct.name}` : 'Add New Product'}
-              </h3>
-              <button onClick={() => setIsProductModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl max-h-[92vh] overflow-y-auto border border-[#123D24]/10">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-[#123D24]/10 pb-4">
+              <div>
+                <h3 className="font-extrabold text-lg text-[#123D24]">
+                  {editingProduct ? `Edit ${editingProduct.name}` : 'Add New Food Product'}
+                </h3>
+                <p className="text-xs text-[#5D675A]">Configure store catalog item parameters & imagery</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsProductModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-[#123D24] hover:bg-[#FFF9E9] rounded-xl transition-colors cursor-pointer"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-bold text-[#123D24] mb-1">Product Name *</label>
-                <input
-                  type="text"
-                  value={productForm.name || ''}
-                  onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                  required
-                  className="w-full px-3 py-2 border rounded-xl"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-bold text-[#123D24] mb-1">Price (₹) *</label>
+              
+              {/* Product Name & Category */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block font-bold text-[#123D24] mb-1">Product Name *</label>
                   <input
-                    type="number"
-                    value={productForm.price || ''}
-                    onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
+                    type="text"
+                    value={productForm.name || ''}
+                    onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                     required
-                    className="w-full px-3 py-2 border rounded-xl font-mono"
+                    placeholder="e.g. Dry Fruit Panjiri"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24]"
                   />
                 </div>
                 <div>
@@ -1234,7 +1174,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                   <select
                     value={productForm.category || 'Traditional Panjiri'}
                     onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-xl"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24]"
                   >
                     <option value="Traditional Panjiri">Traditional Panjiri</option>
                     <option value="Banana Chips & Snacks">Banana Chips & Snacks</option>
@@ -1243,43 +1183,235 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
                 </div>
               </div>
 
+              {/* Selling Price (₹) *, Original Price / MRP (₹), Stock Units * */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">Selling Price (₹) *</label>
+                  <input
+                    type="number"
+                    value={productForm.price || ''}
+                    onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
+                    required
+                    placeholder="499"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs font-mono text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">Original Price / MRP (₹)</label>
+                  <input
+                    type="number"
+                    value={productForm.originalPrice || ''}
+                    onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value ? Number(e.target.value) : undefined })}
+                    placeholder="599"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs font-mono text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">Stock Units *</label>
+                  <input
+                    type="number"
+                    value={productForm.stock ?? 50}
+                    onChange={(e) => setProductForm({ ...productForm, stock: Number(e.target.value) })}
+                    required
+                    placeholder="50"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs font-mono text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+              </div>
+
+              {/* Package Weight * & SKU */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">Package Weight *</label>
+                  <input
+                    type="text"
+                    value={productForm.packageWeight || ''}
+                    onChange={(e) => setProductForm({ ...productForm, packageWeight: e.target.value })}
+                    required
+                    placeholder="500g"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">SKU</label>
+                  <input
+                    type="text"
+                    value={productForm.sku || ''}
+                    onChange={(e) => setProductForm({ ...productForm, sku: e.target.value })}
+                    placeholder="NC-1877"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs font-mono text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+              </div>
+
+              {/* Description */}
               <div>
-                <label className="block font-bold text-[#123D24] mb-1">Package Weight</label>
-                <input
-                  type="text"
-                  value={productForm.packageWeight || ''}
-                  onChange={(e) => setProductForm({ ...productForm, packageWeight: e.target.value })}
-                  placeholder="e.g. 500g"
-                  className="w-full px-3 py-2 border rounded-xl"
+                <label className="block font-bold text-[#123D24] mb-1">Description</label>
+                <textarea
+                  rows={3}
+                  value={productForm.description || ''}
+                  onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                  placeholder="Describe product taste, process, traditional value..."
+                  className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24] resize-y"
                 />
               </div>
 
+              {/* Product Packaging / Food Image * Box */}
+              <div className="border border-[#123D24]/20 rounded-2xl p-4 bg-[#FFFDF7] space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <label className="font-bold text-[#123D24] text-xs">
+                    Product Packaging / Food Image *
+                  </label>
+                  <span className="text-[10px] text-[#56783B] font-mono">
+                    Persistent Base64 Data URL (Max 8MB · Zero Broken Links)
+                  </span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  {/* Image Preview Thumbnail */}
+                  <div className="w-16 h-16 rounded-xl border border-[#123D24]/20 bg-[#FFF9E9] overflow-hidden shrink-0 flex items-center justify-center relative">
+                    {productForm.images?.[0] ? (
+                      <img
+                        src={productForm.images[0]}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-[#123D24]/30" />
+                    )}
+                  </div>
+
+                  <div className="flex-1 w-full space-y-2">
+                    <div className="flex items-center gap-2">
+                      <label className="px-3.5 py-2 bg-[#123D24] text-[#FFF9E9] rounded-xl text-xs font-bold hover:bg-[#0E2E1B] cursor-pointer flex items-center gap-2 shrink-0 transition-colors">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Upload File from Device</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                      {isUploadingImage && (
+                        <span className="text-[11px] text-amber-700 animate-pulse font-medium">
+                          {uploadProgress || 'Uploading...'}
+                        </span>
+                      )}
+                    </div>
+
+                    <input
+                      type="text"
+                      value={productForm.images?.[0] || ''}
+                      onChange={(e) => setProductForm({ ...productForm, images: [e.target.value] })}
+                      placeholder="data:image/jpeg;base64,... or https://..."
+                      className="w-full px-3 py-2 bg-white border border-[#123D24]/20 rounded-xl text-[11px] font-mono text-[#20251F] focus:outline-none focus:border-[#123D24] truncate"
+                    />
+                  </div>
+                </div>
+
+                {/* Brand Presets */}
+                <div className="pt-2 border-t border-[#123D24]/10 flex flex-wrap items-center gap-2 text-[11px]">
+                  <span className="font-bold text-[#123D24]">Brand Presets:</span>
+                  {[
+                    { label: 'Panjiri Pouch', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c' },
+                    { label: 'Banana Chips Pouch', url: 'https://images.unsplash.com/photo-1621996346565-e3d5d6281313' },
+                    { label: 'Panjiri Urli Bowl', url: 'https://images.unsplash.com/photo-1505576399279-565b52d4ac71' },
+                    { label: 'Chips Ceramic Bowl', url: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087' }
+                  ].map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => setProductForm({ ...productForm, images: [preset.url] })}
+                      className="px-2.5 py-1 bg-[#FFF9E9] text-[#123D24] border border-[#123D24]/20 rounded-lg text-[10px] font-semibold hover:bg-[#123D24] hover:text-[#FFF9E9] transition-colors cursor-pointer"
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ingredients (comma separated) */}
               <div>
-                <label className="block font-bold text-[#123D24] mb-1">Image URL</label>
+                <label className="block font-bold text-[#123D24] mb-1">Ingredients (comma separated)</label>
                 <input
                   type="text"
-                  value={productForm.images?.[0] || ''}
-                  onChange={(e) => setProductForm({ ...productForm, images: [e.target.value] })}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 border rounded-xl font-mono"
+                  value={Array.isArray(productForm.ingredients) ? productForm.ingredients.join(', ') : productForm.ingredients || ''}
+                  onChange={(e) =>
+                    setProductForm({
+                      ...productForm,
+                      ingredients: e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                    })
+                  }
+                  placeholder="California Almonds, Pure Cow Desi Ghee, Organic Jaggery"
+                  className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              {/* Allergen Information & Shelf Life */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">Allergen Information</label>
+                  <input
+                    type="text"
+                    value={productForm.allergenInfo || ''}
+                    onChange={(e) => setProductForm({ ...productForm, allergenInfo: e.target.value })}
+                    placeholder="Contains Tree Nuts and Dairy."
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#123D24] mb-1">Shelf Life</label>
+                  <input
+                    type="text"
+                    value={productForm.shelfLife || ''}
+                    onChange={(e) => setProductForm({ ...productForm, shelfLife: e.target.value })}
+                    placeholder="4 Months"
+                    className="w-full px-3.5 py-2.5 bg-[#FFF9E9]/40 border border-[#123D24]/20 rounded-xl text-xs text-[#20251F] focus:outline-none focus:border-[#123D24]"
+                  />
+                </div>
+              </div>
+
+              {/* Storage & Visibility Toggles */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-[#123D24]/10">
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-[#123D24]">
+                  <input
+                    type="checkbox"
+                    checked={productForm.published !== false}
+                    onChange={(e) => setProductForm({ ...productForm, published: e.target.checked })}
+                    className="w-4 h-4 rounded text-[#123D24] focus:ring-[#123D24]"
+                  />
+                  <span>Publish immediately to live storefront</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-[#123D24]">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(productForm.isFeatured)}
+                    onChange={(e) => setProductForm({ ...productForm, isFeatured: e.target.checked })}
+                    className="w-4 h-4 rounded text-[#123D24] focus:ring-[#123D24]"
+                  />
+                  <span>Feature on Homepage</span>
+                </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#123D24]/10">
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}
-                  className="px-4 py-2 border rounded-xl text-slate-600 hover:bg-slate-100"
+                  className="px-5 py-2.5 border border-[#123D24]/20 text-[#123D24] font-bold rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#123D24] text-white font-bold rounded-xl hover:bg-[#0E2E1B]"
+                  className="px-6 py-2.5 bg-[#123D24] text-[#FFF9E9] font-bold rounded-xl hover:bg-[#0E2E1B] transition-colors shadow-xs cursor-pointer"
                 >
                   Save Product
                 </button>
               </div>
+
             </form>
           </div>
         </div>
