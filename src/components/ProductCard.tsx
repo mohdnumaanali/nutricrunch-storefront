@@ -24,7 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, navigate }) =
       >
         <ProductImage
           src={product.images && product.images.length > 0 ? product.images[0] : '/assets/panjiri-pouch.svg'}
-          alt={product.name}
+          alt={`${product.name} (${product.packageWeight || product.weight || '500g'}) - Pure Traditional Indian Food Packaging`}
           className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
         />
 

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /product/
+Allow: /about
+Allow: /contact
+Allow: /faq
+Allow: /track-order
+Disallow: /admin/
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://nutricrunch-storefront.vercel.app/sitemap.xml

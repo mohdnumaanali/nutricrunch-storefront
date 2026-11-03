@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShieldCheck, Heart, Sparkles, MapPin, CheckCircle2, ArrowRight } from 'lucide-react';
+import { SEOHead } from '../components/SEOHead';
 
 interface AboutPageProps {
   navigate: (path: string) => void;
@@ -8,6 +9,18 @@ interface AboutPageProps {
 export const AboutPage: React.FC<AboutPageProps> = ({ navigate }) => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+      {/* Dynamic SEO & Story Metadata */}
+      <SEOHead
+        title="Our Story & Philosophy | NutriCrunch™ Artisanal Foods"
+        description="Learn about NutriCrunch's roots in Hanamkonda & Warangal. Handcrafting pure cow bilona ghee panjiri and cold-pressed coconut oil snacks with zero shortcuts."
+        keywords="about nutricrunch, hanamkonda artisanal food, warangal traditional snacks, bilona ghee panjiri story, zero palm oil snacks"
+        canonicalPath="/about"
+        ogType="article"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Our Story', url: '/about' }
+        ]}
+      />
       
       {/* Hero Header */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">

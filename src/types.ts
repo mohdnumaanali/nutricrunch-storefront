@@ -10,6 +10,7 @@ export interface Product {
   ingredients: string[];
   allergenInfo: string;
   packageWeight: string;
+  weight?: string;
   stock: number;
   sku: string;
   published: boolean;
@@ -18,6 +19,7 @@ export interface Product {
   shelfLife: string;
   storageInstructions: string;
   images: string[];
+  image_url?: string;
   createdAt?: string;
   updatedAt?: string;
 }

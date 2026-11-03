@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, Filter, SlidersHorizontal } from 'lucide-react';
 import { Product } from '../types';
 import { ProductCard } from '../components/ProductCard';
+import { SEOHead } from '../components/SEOHead';
 
 interface ShopPageProps {
   products: Product[];
@@ -48,6 +49,19 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Dynamic SEO & Breadcrumbs Schema */}
+      <SEOHead
+        title="Shop Authentic Homemade Panjiri & Snacks | NutriCrunch™"
+        description="Explore NutriCrunch's artisanal food catalog. Pure cow desi ghee panjiri, Kerala coconut oil banana chips, and wholesome snacks. Same-day delivery in Tri-Cities."
+        keywords="shop panjiri, buy banana chips online, pure bilona ghee panjiri, traditional healthy snacks, nutricrunch shop"
+        canonicalPath="/shop"
+        ogType="website"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Shop All', url: '/shop' }
+        ]}
+      />
+
       {/* Page Title & Breadcrumb */}
       <div>
         <div className="text-xs font-semibold text-[#56783B] uppercase tracking-wider">

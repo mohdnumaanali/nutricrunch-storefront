@@ -14,6 +14,7 @@ import {
 import { Product } from '../types';
 import { useCart, getOrCreateSessionId } from '../context/CartContext';
 import { ProductImage } from '../components/ProductImage';
+import { SEOHead, generateProductSchema } from '../components/SEOHead';
 
 interface ProductDetailPageProps {
   slug: string;
@@ -83,7 +84,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-      
+      {/* Dynamic SEO, Social Preview & Schema Metadata */}
+      <SEOHead
+        title={`${product.name} (₹${product.price}) | NutriCrunch™ Authentic Foods`}
+        description={
+          product.description ||
+          `Order ${product.name} handcrafted in small batches using pure ingredients. Free delivery in Warangal & across India on orders ₹499+.`
+        }
+        keywords={`${product.name}, buy ${product.name} online, ${product.category}, pure cow bilona ghee panjiri, cold-pressed coconut oil banana chips, homemade indian snacks`}
+        canonicalPath={`/product/${product.slug}`}
+        ogType="product"
+        ogImage={product.images && product.images.length > 0 ? product.images[0] : '/logo.png'}
+        ogImageAlt={`${product.name} - Artisanal Handmade Snack by NutriCrunch`}
+        productPrice={product.price}
+        productCurrency="INR"
+        productAvailability={product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Shop', url: '/shop' },
+          { name: product.name, url: `/product/${product.slug}` }
+        ]}
+        jsonLd={generateProductSchema(product)}
+      />
+
       {/* Breadcrumb Navigation */}
       <nav className="flex items-center gap-2 text-xs text-[#5D675A]">
         <button onClick={() => navigate('/')} className="hover:text-[#123D24]">
@@ -105,7 +128,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="aspect-square bg-white rounded-3xl p-8 border border-[#123D24]/10 shadow-sm flex items-center justify-center overflow-hidden">
             <ProductImage
               src={selectedImage || (product.images && product.images[0]) || '/assets/panjiri-pouch.svg'}
-              alt={product.name}
+              alt={`${product.name} (${product.packageWeight || '500g'}) - Pure Traditional Indian Snack Packaging`}
               className="max-h-full max-w-full object-contain transition-all duration-300 hover:scale-105"
             />
           </div>

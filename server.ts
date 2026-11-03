@@ -1909,7 +1909,7 @@ app.put('/api/admin/credentials', requireAdmin, async (req: Request, res: Respon
 // 10. TECHNICAL SEO: SITEMAP & ROBOTS.TXT
 app.get('/sitemap.xml', (req: Request, res: Response) => {
   const db = getDB();
-  const domain = process.env.APP_URL || 'https://nutricrunch.in';
+  const domain = process.env.APP_URL || 'https://nutricrunch-storefront.vercel.app';
 
   const staticUrls = [
     '',
@@ -1951,7 +1951,7 @@ app.get('/sitemap.xml', (req: Request, res: Response) => {
 });
 
 app.get('/robots.txt', (req: Request, res: Response) => {
-  const domain = process.env.APP_URL || 'https://nutricrunch.in';
+  const domain = process.env.APP_URL || 'https://nutricrunch-storefront.vercel.app';
   const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /admin/

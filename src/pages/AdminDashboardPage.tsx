@@ -109,7 +109,16 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
     tagline: 'Wholesome Traditional Snacks',
     phone: '+91 9154797936',
     whatsapp: '919154797936',
-    serviceZones: [{ name: 'Tri-Cities', fee: 40, freeAbove: 499 }]
+    email: 'care@nutricrunch.in',
+    address: 'Shop #4, Sri Rama Towers, Main Road, Hanamkonda',
+    city: 'Warangal',
+    state: 'Telangana',
+    serviceZones: [{ name: 'Tri-Cities', pinCodes: ['506001', '506002', '506003', '506004'], fee: 40, freeAbove: 499 }],
+    nationalShippingFee: 70,
+    nationalFreeAbove: 999,
+    codEnabled: true,
+    razorpayEnabled: true,
+    razorpayKeyId: 'rzp_test_sampleKey123'
   });
 
   // Image Upload State
@@ -548,7 +557,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
       totalOrders: orders.length,
       completedOrders: orders.filter((o) => o.orderStatus === 'Delivered').length,
       pendingOrders: orders.filter((o) => o.orderStatus !== 'Delivered' && o.orderStatus !== 'Cancelled').length,
+      cancelledOrders: orders.filter((o) => o.orderStatus === 'Cancelled').length,
       aov: orders.length > 0 ? Math.round(orders.reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0) / orders.length) : 0,
+      totalProducts: products.length,
+      lowStockProducts: products.filter((p) => p.stock < 10).length,
+      productViews: 420,
       conversionRate: '3.2%',
       uniqueVisitors: 145
     },

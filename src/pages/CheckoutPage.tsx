@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Truck, ArrowLeft, CheckCircle2, AlertCircle, MessageCircle, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { Order } from '../types';
+import { SEOHead } from '../components/SEOHead';
 
 interface CheckoutPageProps {
   navigate: (path: string) => void;
@@ -173,6 +174,14 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate, onOrderPla
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Dynamic SEO Metadata */}
+      <SEOHead
+        title="Secure Checkout | NutriCrunch™ Artisanal Foods"
+        description="Complete your order for pure cow bilona ghee panjiri and crispy banana chips with express local and nationwide delivery."
+        canonicalPath="/checkout"
+        ogType="website"
+      />
+
       <div>
         <button
           onClick={() => navigate('/cart')}

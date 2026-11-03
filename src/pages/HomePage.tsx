@@ -25,6 +25,7 @@ import {
   REVIEWS_UPDATED_EVENT,
   DEFAULT_CUSTOMER_REVIEWS
 } from '../utils/reviewStorage';
+import { SEOHead, generateLocalBusinessSchema } from '../components/SEOHead';
 
 interface HomePageProps {
   products: Product[];
@@ -241,6 +242,15 @@ export const HomePage: React.FC<HomePageProps> = ({ products, navigate }) => {
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-16">
+      {/* Dynamic SEO, Social Preview & Local Business Structured Data */}
+      <SEOHead
+        title="NutriCrunch™ | Authentic Homemade Panjiri & Kerala Banana Chips"
+        description="Buy authentic homemade dry fruits panjiri slow-roasted in pure cow bilona ghee & crispy banana chips cooked in cold-pressed coconut oil. Express delivery in Warangal & across India."
+        keywords="homemade panjiri online, authentic dry fruit panjiri, bilona ghee panjiri, kerala banana chips coconut oil, postpartum panjiri warangal, hanamkonda snacks, healthy indian snacks"
+        canonicalPath="/"
+        ogType="website"
+        jsonLd={generateLocalBusinessSchema()}
+      />
       
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#FFFDF7] to-[#FFF9E9] pt-8 pb-16 border-b border-[#123D24]/10">

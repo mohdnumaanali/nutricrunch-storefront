@@ -6,26 +6,50 @@ export const CATALOG_UPDATED_EVENT = 'nutricrunch_catalog_updated';
 // Default products bundled in code
 export const INITIAL_PRODUCTS: Product[] = [
   {
-    id: '1',
+    id: 'prod-panjiri-01',
+    slug: 'nutricrunch-dry-fruits-panjiri',
     name: 'NutriCrunch Artisanal Panjiri',
-    category: 'Panjiri',
+    category: 'Traditional Panjiri',
     price: 799,
+    originalPrice: 899,
+    discountPercent: 11,
+    packageWeight: '500g',
     weight: '500g',
+    stock: 45,
+    sku: 'NC-PANJ-500G',
+    published: true,
+    isFeatured: true,
     description: 'Wholesome artisanal dry fruits panjiri slow-roasted in pure cow desi ghee.',
     ingredients: ['Pure Cow Desi Ghee', 'California Almonds', 'Cashews', 'Lotus Seeds', 'Organic Unrefined Jaggery', 'Green Cardamom'],
-    image_url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c',
-    in_stock: true
+    allergenInfo: 'Contains Tree Nuts, Milk Solid (Pure Desi Ghee), Gluten.',
+    dietary: ['100% Vegetarian', 'Pure Desi Ghee', 'No Refined Sugar', 'Preservative Free'],
+    shelfLife: '4 Months',
+    storageInstructions: 'Store in a cool, dry place. Seal tightly.',
+    images: ['/assets/panjiri-pouch.svg', '/assets/panjiri-bowl.svg'],
+    image_url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'
   },
   {
-    id: '2',
+    id: 'prod-banana-02',
+    slug: 'nutricrunch-banana-chips',
     name: 'Kerala-Style Crispy Banana Chips',
-    category: 'Banana Chips',
+    category: 'Banana Chips & Snacks',
     price: 199,
+    originalPrice: 249,
+    discountPercent: 20,
+    packageWeight: '250g',
     weight: '250g',
+    stock: 80,
+    sku: 'NC-BAN-250G',
+    published: true,
+    isFeatured: true,
     description: 'Crispy Nendran banana chips cooked in 100% cold-pressed coconut oil.',
     ingredients: ['Raw Nendran Plantains', 'Cold-Pressed Coconut Oil', 'Rock Salt'],
-    image_url: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087',
-    in_stock: true
+    allergenInfo: 'Manufactured in facility handling nuts. Gluten-free.',
+    dietary: ['100% Vegan', 'Gluten Free', 'No Palm Oil', 'Cold-Pressed Coconut Oil'],
+    shelfLife: '3 Months',
+    storageInstructions: 'Store in a cool, dry place.',
+    images: ['/assets/banana-chips-pouch.svg', '/assets/banana-chips-bowl.svg'],
+    image_url: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087'
   }
 ];
 
